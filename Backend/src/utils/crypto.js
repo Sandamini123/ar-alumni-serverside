@@ -1,0 +1,11 @@
+const crypto = require("crypto");
+
+function randomToken() {
+  return crypto.randomBytes(32).toString("hex"); // cryptographically strong
+}
+
+function sha256(input) {
+  return crypto.createHash("sha256").update(input).digest("hex");
+}
+
+module.exports = { randomToken, sha256 };

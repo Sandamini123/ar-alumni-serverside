@@ -1,7 +1,10 @@
-import { app } from "./app.js";
+const app = require("./app");
+const { startWinnerJob } = require("./jobs/winnerJob");
 
-const PORT = 5000;
+const port = Number(process.env.PORT || 4000);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Backend running on http://localhost:${port}`);
+  console.log(`Swagger: http://localhost:${port}/api-docs`);
+  startWinnerJob();
 });
