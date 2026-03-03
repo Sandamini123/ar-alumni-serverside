@@ -1,0 +1,104 @@
+:root{
+  --bg:#0b1020;
+  --card:#101a33;
+  --text:#e8ecff;
+  --muted:#aab3d6;
+  --accent:#4da3ff;
+  --danger:#ff6b6b;
+  --border:rgba(255,255,255,0.08);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: radial-gradient(1000px 500px at 30% 10%, rgba(77,163,255,0.2), transparent),
+              radial-gradient(800px 500px at 70% 40%, rgba(146,77,255,0.18), transparent),
+              var(--bg);
+  color:var(--text);
+}
+
+.shell{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+.card{
+  width: min(420px, 100%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent 40%), var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+
+.cardHeader h2{margin:0 0 6px 0; font-size:22px}
+.muted{color:var(--muted); margin:0}
+
+.cardBody{margin-top:14px}
+.cardFooter{margin-top:16px; padding-top:12px; border-top:1px solid var(--border)}
+
+.stack{display:flex; flex-direction:column; gap:12px}
+
+.field{display:flex; flex-direction:column; gap:6px}
+.label{font-size:13px; color:var(--muted)}
+.input{
+  padding:12px 12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background: rgba(0,0,0,0.25);
+  color: var(--text);
+  outline:none;
+}
+.input:focus{border-color: rgba(77,163,255,0.6)}
+
+.btn{
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid rgba(77,163,255,0.35);
+  background: rgba(77,163,255,0.18);
+  color: var(--text);
+  cursor:pointer;
+  font-weight:600;
+}
+.btn:disabled{opacity:0.6; cursor:not-allowed}
+
+.alert{
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.25);
+  padding:10px 12px;
+  border-radius:12px;
+  color: var(--text);
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  justify-content:space-between;
+  align-items:center;
+}
+
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+
+.linkBtn{
+  background: transparent;
+  border:none;
+  color: var(--accent);
+  cursor:pointer;
+  padding:0;
+  text-align:left;
+}
+
+.page{width:min(900px, 100%); margin:auto}
+.topbar{display:flex; justify-content:space-between; align-items:center; width:100%}
+.panel{
+  margin-top:16px;
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background: rgba(0,0,0,0.18);
+}

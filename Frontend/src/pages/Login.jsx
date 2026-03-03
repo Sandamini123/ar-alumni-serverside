@@ -1,66 +1,57 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthCard from "../components/AuthCard";
-import InputField from "../components/InputField";
-import { authApi } from "../api/auth.api";
+import Card from "../components/Card";
+import Input from "../components/Input";
+import Button from "../components/Button";
+import { authApi } from "../api/auth";
 
 export default function Login() {
   const nav = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState("");
+  const [note, setNote] = useState(null);
 
-  async function onSubmit(e) {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    setErr("");
+    setNote(null);
     setLoading(true);
     try {
-      const res = await authApi.login({ email, password });
-      localStorage.setItem("auth_token", res.data.token);
+      const res = await authApi.login(form);
+      localStorage.setItem("token", res.data.token);
       nav("/dashboard");
-    } catch (e2) {
-      setErr(e2?.response?.data?.message || "Login failed");
+    } catch (err) {
+      setNote(err?.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <AuthCard title="Welcome back" subtitle="Login after verifying your email via OTP.">
-      <form onSubmit={onSubmit}>
-        <InputField label="Email" value={email} onChange={setEmail} placeholder="name@eastminster.ac.uk" autoComplete="email" />
-        <InputField label="Password" type="password" value={password} onChange={setPassword} placeholder="StrongPass1" autoComplete="current-password" />
-
-        <button disabled={loading} style={btn}>
-          {loading ? "Signing in..." : "Login"}
-        </button>
-
-        {err ? <p style={bad}>{err}</p> : null}
-
-        <p style={foot}>
-          Forgot password? <Link style={link} to="/forgot-password">Reset here</Link>
-        </p>
-
-        <p style={foot}>
-          New user? <Link style={link} to="/register">Register</Link>
-        </p>
+    <Card
+      title="Login"
+      footer={
+        <div className="row">
+          <Link to="/forgot-password">Forgot password?</Link>
+          <Link to="/register">Create account</Link>
+        </div>
+      }
+    >
+      <form onSubmit={onSubmit} className="stack">
+        <Input
+          label="Email"
+          placeholder="abc1@eastminster.ac.uk"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+        />
+        <Input
+          label="Password"
+          type="password"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+        />
+        {note ? <div className="alert">{note}</div> : null}
+        <Button loading={loading} type="submit">Login</Button>
       </form>
-    </AuthCard>
+    </Card>
   );
 }
-
-const btn = {
-  width: "100%",
-  padding: "11px 12px",
-  borderRadius: 10,
-  border: 0,
-  marginTop: 8,
-  background: "#3b82f6",
-  color: "white",
-  fontWeight: 700,
-  cursor: "pointer",
-};
-const bad = { marginTop: 12, color: "#fca5a5" };
-const foot = { marginTop: 14, color: "rgba(255,255,255,0.7)" };
-const link = { color: "#93c5fd" };

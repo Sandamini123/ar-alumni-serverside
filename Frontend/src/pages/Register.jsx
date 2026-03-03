@@ -1,68 +1,58 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import AuthCard from "../components/AuthCard";
-import InputField from "../components/InputField";
-import { authApi } from "../api/auth.api";
+import { Link, useNavigate } from "react-router-dom";
+import Card from "../components/Card";
+import Input from "../components/Input";
+import Button from "../components/Button";
+import { authApi } from "../api/auth";
 
 export default function Register() {
   const nav = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [err, setErr] = useState("");
+  const [note, setNote] = useState(null);
 
-  async function onSubmit(e) {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    setMsg(""); setErr("");
+    setNote(null);
     setLoading(true);
     try {
-      const res = await authApi.register({ email, password });
-      setMsg(res.data?.message || "Registered. OTP sent.");
-      nav("/verify-email", { state: { email } });
-    } catch (e2) {
-      setErr(e2?.response?.data?.message || "Registration failed");
+      await authApi.register(form);
+      setNote("OTP sent. Please verify your email.");
+      nav("/verify-email", { state: { email: form.email } });
+    } catch (err) {
+      setNote(err?.response?.data?.message || "Register failed");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <AuthCard
-      title="Create your alumni account"
-      subtitle="Use your university email. We'll send a one-time OTP to verify your email."
+    <Card
+      title="Create account"
+      footer={
+        <div className="row">
+          <span className="muted">Already have an account?</span>
+          <Link to="/login">Login</Link>
+        </div>
+      }
     >
-      <form onSubmit={onSubmit}>
-        <InputField label="University Email" value={email} onChange={setEmail} placeholder="name@eastminster.ac.uk" autoComplete="email" />
-        <InputField label="Password" type="password" value={password} onChange={setPassword} placeholder="StrongPass1" autoComplete="new-password" />
-
-        <button disabled={loading} style={btn}>
-          {loading ? "Creating..." : "Register & Send OTP"}
-        </button>
-
-        {msg ? <p style={ok}>{msg}</p> : null}
-        {err ? <p style={bad}>{err}</p> : null}
-
-        <p style={foot}>
-          Already verified? <Link style={link} to="/login">Login</Link>
-        </p>
+      <form onSubmit={onSubmit} className="stack">
+        <Input
+          label="University Email"
+          placeholder="abc1@eastminster.ac.uk"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+        />
+        <Input
+          label="Password"
+          type="password"
+          placeholder="Min 4 chars"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+        />
+        {note ? <div className="alert">{note}</div> : null}
+        <Button loading={loading} type="submit">Register & Send OTP</Button>
       </form>
-    </AuthCard>
+    </Card>
   );
 }
-
-const btn = {
-  width: "100%",
-  padding: "11px 12px",
-  borderRadius: 10,
-  border: 0,
-  marginTop: 8,
-  background: "#3b82f6",
-  color: "white",
-  fontWeight: 700,
-  cursor: "pointer",
-};
-const ok = { marginTop: 12, color: "#86efac" };
-const bad = { marginTop: 12, color: "#fca5a5" };
-const foot = { marginTop: 14, color: "rgba(255,255,255,0.7)" };
-const link = { color: "#93c5fd" };
